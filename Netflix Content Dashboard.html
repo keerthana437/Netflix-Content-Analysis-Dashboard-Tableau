@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Netflix Content Dashboard</title>
+<style>
+:root{color-scheme:dark;--bg:#000;--card:#141414;--line:#2a2a2a;--red:#E50914;--dred:#831010;--txt:#F5F5F1;--mut:#8C8C8C;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:"Bebas Neue","Helvetica Neue",Arial,sans-serif}
+.w{max-width:1280px;margin:0 auto;padding:20px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;border-bottom:3px solid var(--red);padding-bottom:14px;margin-bottom:18px}
+h1{margin:0;font-size:clamp(30px,5vw,52px);letter-spacing:3px;color:var(--red);font-weight:400}
+header p{margin:2px 0 0;color:var(--mut);font:14px Arial,sans-serif}
+.tg button{background:var(--card);color:var(--txt);border:1px solid var(--line);padding:9px 18px;font:15px Arial,sans-serif;cursor:pointer}
+.tg button[aria-pressed=true]{background:var(--red);border-color:var(--red);font-weight:700}
+.tg button:focus-visible{outline:2px solid #fff}
+.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--dred);padding:16px;min-width:0}
+.k .card b{display:block;font-size:46px;font-weight:400;color:var(--txt);line-height:1}
+.k .card span{color:var(--mut);font:13px Arial,sans-serif}
+.g{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.g .card{grid-column:span 4}.g .w2{grid-column:span 8}.g .w3{grid-column:span 6}
+h2{margin:0 0 10px;font-size:20px;font-weight:400;letter-spacing:1px}
+.cv{position:relative;height:260px}
+footer{margin-top:18px;color:var(--mut);font:12px Arial,sans-serif}
+@media(max-width:900px){.g .card,.g .w2,.g .w3{grid-column:span 12}}
+</style></head><body><div class="w">
+<header><div><h1>NETFLIX CONTENT ANALYSIS</h1><p>Catalogue of 8,807 titles, added to Netflix 2012–2021</p></div>
+<div class="tg" id="tg"><button aria-pressed="true" data-t="All">All titles</button><button aria-pressed="false" data-t="Movie">Movies</button><button aria-pressed="false" data-t="TV Show">TV shows</button></div></header>
+<div class="k"><div class="card"><b id="k1"></b><span>Titles</span></div><div class="card"><b id="k2"></b><span>Countries</span></div><div class="card"><b id="k3"></b><span>Peak year for additions</span></div><div class="card"><b id="k4"></b><span>Rated for adults</span></div></div>
+<div class="g">
+<div class="card w2"><h2>Titles added per year</h2><div class="cv"><canvas id="c1"></canvas></div></div>
+<div class="card"><h2>Audience rating mix</h2><div class="cv"><canvas id="c2"></canvas></div></div>
+<div class="card w3"><h2>Top 10 countries</h2><div class="cv"><canvas id="c3"></canvas></div></div>
+<div class="card w3"><h2>Top 10 genres</h2><div class="cv"><canvas id="c4"></canvas></div></div>
+<div class="card w3"><h2>Movie length in minutes (average 99)</h2><div class="cv"><canvas id="c5"></canvas></div></div>
+</div><footer>Source: Netflix titles dataset. Genres and countries count a title once per tag, so totals can exceed the title count.</footer></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const D={"All": {"n": 8807, "ctry": 122, "yrs": [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021], "yv": [3, 11, 24, 82, 429, 1188, 1649, 2016, 1879, 1498], "c": [["United States", 3690], ["India", 1046], ["United Kingdom", 806], ["Canada", 445], ["France", 393], ["Japan", 318], ["Spain", 232], ["South Korea", 231], ["Germany", 226], ["Mexico", 169]], "g": [["International Movies", 2752], ["Dramas", 2427], ["Comedies", 1674], ["International TV Shows", 1351], ["Documentaries", 869], ["Action & Adventure", 859], ["TV Dramas", 763], ["Independent Movies", 756], ["Children & Family Movies", 641], ["Romantic Movies", 616]], "a": [["Adults", 4009], ["Teens", 2650], ["Older Kids", 1150], ["Kids", 908], ["Not Rated", 90]], "yr": 2019, "pct": 46}, "Movie": {"n": 6131, "ctry": 117, "yrs": [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021], "yv": [3, 6, 19, 56, 253, 839, 1237, 1424, 1284, 993], "c": [["United States", 2752], ["India", 962], ["United Kingdom", 534], ["Canada", 319], ["France", 303], ["Germany", 182], ["Spain", 171], ["Japan", 119], ["China", 114], ["Mexico", 111]], "g": [["International Movies", 2752], ["Dramas", 2427], ["Comedies", 1674], ["Documentaries", 869], ["Action & Adventure", 859], ["Independent Movies", 756], ["Children & Family Movies", 641], ["Romantic Movies", 616], ["Thrillers", 577], ["Music & Musicals", 375]], "a": [["Adults", 2862], ["Teens", 1917], ["Older Kids", 827], ["Kids", 442], ["Not Rated", 83]], "yr": 2019, "pct": 47}, "TV Show": {"n": 2676, "ctry": 65, "yrs": [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021], "yv": [0, 5, 5, 26, 176, 349, 412, 592, 595, 505], "c": [["United States", 938], ["United Kingdom", 272], ["Japan", 199], ["South Korea", 170], ["Canada", 126], ["France", 90], ["India", 84], ["Taiwan", 70], ["Australia", 66], ["Spain", 61]], "g": [["International TV Shows", 1351], ["TV Dramas", 763], ["TV Comedies", 581], ["Crime TV Shows", 470], ["Kids' TV", 451], ["Docuseries", 395], ["Romantic TV Shows", 370], ["Reality TV", 255], ["British TV Shows", 253], ["Anime Series", 176]], "a": [["Adults", 1147], ["Teens", 733], ["Kids", 466], ["Older Kids", 323], ["Not Rated", 7]], "yr": 2020, "pct": 43}, "dur": [["40-59", 288], ["60-79", 594], ["80-99", 2157], ["100-119", 1724], ["120-139", 770], ["140-159", 271], ["160-179", 108], ["180-199", 29]], "avgmin": 99};const R='#E50914',DR='#831010',T='#F5F5F1',M='#8C8C8C',L='#2a2a2a';
+Chart.defaults.color=M;Chart.defaults.font.family='Arial,sans-serif';Chart.defaults.borderColor=L;
+const base=(x={})=>({responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},...x});
+const bar=(id,lab,val,col,h)=>new Chart(id,{type:'bar',data:{labels:lab,datasets:[{data:val,backgroundColor:col,borderWidth:0}]},options:base({indexAxis:h?'y':'x',scales:{x:{grid:{display:!h}},y:{grid:{display:h?false:true}}}})});
+const cs={};let cur='All';
+function draw(t){const s=D[t];cur=t;
+k1.textContent=s.n.toLocaleString();k2.textContent=s.ctry;k3.textContent=s.yr;k4.textContent=s.pct+'%';
+Object.values(cs).forEach(c=>c.destroy());
+cs.a=new Chart(c1,{type:'line',data:{labels:s.yrs,datasets:[{data:s.yv,borderColor:R,backgroundColor:'rgba(229,9,20,.25)',fill:true,tension:.3,pointBackgroundColor:R}]},options:base()});
+cs.b=new Chart(c2,{type:'doughnut',data:{labels:s.a.map(x=>x[0]),datasets:[{data:s.a.map(x=>x[1]),backgroundColor:[R,'#B20710',DR,'#564D4D','#8C8C8C'],borderColor:'#141414',borderWidth:3}]},options:base({cutout:'62%',plugins:{legend:{display:true,position:'bottom',labels:{color:T}}}})});
+cs.c=bar(c3,s.c.map(x=>x[0]),s.c.map(x=>x[1]),R,true);
+cs.d=bar(c4,s.g.map(x=>x[0]),s.g.map(x=>x[1]),t=='TV Show'?DR:R,true);
+cs.e=bar(c5,D.dur.map(x=>x[0]),D.dur.map(x=>x[1]),R,false);}
+document.getElementById('tg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+document.querySelectorAll('#tg button').forEach(x=>x.setAttribute('aria-pressed',x===b));draw(b.dataset.t);});
+draw('All');
+</script></body></html>
